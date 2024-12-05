@@ -12,6 +12,9 @@ import Cart from './components/User/Cart';
 import GuestList from './components/User/GuestList';
 import OrderStatus from './components/User/OrderStatus';
 import Vendor from './components/User/Vendor';
+import RegisterAdmin from './components/RegisterAdmin';
+import RegisterUser from './components/RegisterUser';
+import RegisterVendor from './components/RegisterVendor';
 function App() {
   return (
     <div>
@@ -19,9 +22,9 @@ function App() {
       <Routes>
         <Route exact path="/" element={<Home />} />
         <Route exact path="/login" element={<Login />} />
-        <Route exact path="/register/vendor" element={<Login />} />
-        <Route exact path="/register/admin" element={<Login />} />
-        <Route exact path="/register/user" element={<Login />} />
+        <Route exact path="/register/vendor" element={<RegisterVendor/>} />
+        <Route exact path="/register/admin" element={<RegisterAdmin />} />
+        <Route exact path="/register/user" element={<RegisterUser/>} />
         <Route exact path="/vendor" element={<VendorMain />} />
         <Route exact path="/admin" element={<AdminMain />} />
         <Route exact path="/user" element={<UserMain />} />

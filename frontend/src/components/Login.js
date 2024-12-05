@@ -6,9 +6,9 @@ function Login() {
     <div>
       <h1>Login</h1>
       <ul>
-        <li><Link to="/vendor">Vendor</Link></li>
-        <li><Link to="/admin">Admin</Link></li>
-        <li><Link to="/user">User</Link></li>
+        <li><Link exact to="/vendor">Vendor</Link></li>
+        <li><Link exact to="/admin">Admin</Link></li>
+        <li><Link exact to="/user">User</Link></li>
       </ul>
     </div>
   );

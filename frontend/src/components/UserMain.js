@@ -18,12 +18,6 @@ function UserMain() {
         </ul>
       </nav>
 
-      <Routes>
-        <Route path="vendor" element={<Vendor />} />
-        <Route path="cart" element={<Cart />} />
-        <Route path="guest-list" element={<GuestList />} />
-        <Route path="order-status" element={<OrderStatus />} />
-      </Routes>
     </div>
   );
 }

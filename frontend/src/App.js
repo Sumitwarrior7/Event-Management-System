@@ -12,15 +12,9 @@ import Cart from './components/User/Cart';
 import GuestList from './components/User/GuestList';
 import OrderStatus from './components/User/OrderStatus';
 import Vendor from './components/User/Vendor';
-import VendorList from './components/Vendor/vendors';
-import AdminDashboard from './components/Admin/adminDashboard';
-import VendorDashboard from './components/Vendor/vendorDashboard';
-import AddEvent from './components/User/AddEvent';
-import Signup from './components/register';
 function App() {
   return (
     <div>
-     
       <Routes>
         <Route exact path="/vendor/vendor-list"  element={<VendorList />} />
         <Route exact path="/" element={<Home />} />

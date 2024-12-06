@@ -15,10 +15,8 @@ import Vendor from './components/User/Vendor';
 import VendorList from './components/Vendor/vendors';
 import AdminDashboard from './components/Admin/adminDashboard';
 import VendorDashboard from './components/Vendor/vendorDashboard';
-import RegisterVendor from './components/RegisterVendor';
-import RegisterAdmin from './components/RegisterAdmin';
-import RegisterUser from './components/RegisterUser';
 import AddEvent from './components/User/AddEvent';
+import Signup from './components/register';
 function App() {
   return (
     <div>
@@ -27,12 +25,10 @@ function App() {
         <Route exact path="/vendor/vendor-list"  element={<VendorList />} />
         <Route exact path="/" element={<Home />} />
         <Route exact path="/login" element={<Login />} />
-        <Route exact path="/register/vendor" element={<RegisterVendor/>} />
-        <Route exact path="/register/admin" element={<RegisterAdmin />} />
-        <Route exact path="/register/user" element={<RegisterUser/>} />
         <Route exact path="/vendor" element={<VendorMain />} />
         <Route exact path="/admin" element={<AdminMain />} />
         <Route exact path="/user" element={<UserMain />} />
+        <Route exact path="/register" element={<Signup />} />
         <Route exact path="/vendor/add-event" element={<AddEvent />} />
         <Route exact path="/vendor/your-item" element={<YourItem />} />
         <Route exact path="/vendor/add-new-item" element={<AddNewItem />} />

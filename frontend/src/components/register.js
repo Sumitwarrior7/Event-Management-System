@@ -159,6 +159,18 @@ const Signup = () => {
             Register
           </button>
         </form>
+
+        <div className="mt-4 text-center">
+          <p className="text-gray-700">
+            Already have an account?{" "}
+            <button
+              onClick={() => navigate("/login")}
+              className="text-blue-500 hover:underline"
+            >
+              Login 
+            </button>
+          </p>
+        </div>
       </div>
     </div>
   );

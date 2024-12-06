@@ -83,7 +83,13 @@ const AddEvent = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <>
+    
+    <div className="min-h-screen bg-gray-100 p-6" style={{
+          backgroundImage:
+            "url('https://c4.wallpaperflare.com/wallpaper/986/210/423/party-light-event-people-wallpaper-preview.jpg')",
+        }}>
+      
       <h1 className="text-3xl font-bold text-blue-600 text-center mb-8">Add Event</h1>
 
       <div className="max-w-md mx-auto bg-white rounded-lg shadow p-6 mb-8">
@@ -173,6 +179,7 @@ const AddEvent = () => {
         </button>
       </div>
     </div>
+    </>
   );
 };
 

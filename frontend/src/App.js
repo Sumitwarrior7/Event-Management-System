@@ -50,7 +50,7 @@ function App() {
         {role === "vendor" && (
           <>
             <Route exact path="/vendor/vendor-list" element={<VendorList />} />
-            <Route exact path="/vendor" element={<VendorMain />} />
+            <Route exact path="/vendor" element={<VendorDashboard />} />
             <Route exact path="/vendor/your-item" element={<YourItem />} />
             <Route exact path="/vendor/add-new-item" element={<AddNewItem />} />
             <Route exact path="/vendor/transaction" element={<Transaction />} />
@@ -62,7 +62,7 @@ function App() {
         {/* Admin-Specific Routes */}
         {role === "admin" && (
           <>
-            <Route exact path="/admin" element={<AdminMain />} />
+            <Route exact path="/admin" element={<AdminDashboard />} />
             <Route exact path="/admin/dashboard" element={<AdminDashboard />} />
           </>
         )}

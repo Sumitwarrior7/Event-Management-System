@@ -52,9 +52,9 @@ const Login = () => {
         if (role === "user") {
           navigate("/user");
         } else if (role === "admin") {
-          navigate("/admin");
+          navigate("/admin/dashboard");
         } else if (role === "vendor") {
-          navigate("/vendor");
+          navigate("/vendor/dashboard");
         }
       } else {
         // Handle errors (e.g., invalid credentials)
@@ -72,7 +72,7 @@ const Login = () => {
       style={{ backgroundImage: 'url(https://wallpapercave.com/dwp1x/wp10715825.jpg)' }}
     >
     <div 
-      className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm border-2 border-blue-200"
+      className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm border-2"
     >
         <h1 className="text-3xl font-bold mb-6 text-center">Login</h1>
         {errorMessage && (

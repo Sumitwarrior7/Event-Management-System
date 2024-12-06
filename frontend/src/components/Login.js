@@ -67,9 +67,14 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-6 rounded shadow-md w-full max-w-sm">
-        <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
+    <div 
+      className="min-h-screen flex items-center justify-center bg-cover bg-center absolute inset-0 bg-black opacity-120" 
+      style={{ backgroundImage: 'url(https://wallpapercave.com/dwp1x/wp10715825.jpg)' }}
+    >
+    <div 
+      className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm border-2 border-blue-200"
+    >
+        <h1 className="text-3xl font-bold mb-6 text-center">Login</h1>
         {errorMessage && (
           <div className="mb-4 text-red-500 text-center">{errorMessage}</div>
         )}

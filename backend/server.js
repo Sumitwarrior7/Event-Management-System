@@ -1,10 +1,16 @@
 const express = require("express");
+const cors=require("cors");
 const app = express();
 
 // Middleware to parse JSON request bodies
 app.use(express.json());
 
 // Root route
+app.use(cors({
+  origin: 'http://localhost:3000', // or '*' to allow all origins
+  methods: 'GET,POST,PUT,DELETE',
+  allowedHeaders: 'Content-Type,Authorization'
+}));
 
 app.use("/", require("./routes"));
 

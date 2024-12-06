@@ -37,17 +37,17 @@ const Login = () => {
       });
 
       const data = await response.json();
-
+      console.log("here it is", data[0].data.email);
       if (response.ok) {
         // Update global state with login details
         setGlobalState({
           ...globalState,
-          email: data.email,
-          role: role,
-          name: data.name, // Assuming the backend returns the user's name
+          email: data[0].data.email,
+          role: data[0].data.role,
+          name: data[0].data.name, // Assuming the backend returns the user's name
         });
 
-        console.log("Global State Updated:", { email: data.email, role });
+        console.log("Global State Updated:", { email: data[0].data.email, role:data[0].data.role });
         // Redirect to appropriate dashboard
         if (role === "user") {
           navigate("/user");

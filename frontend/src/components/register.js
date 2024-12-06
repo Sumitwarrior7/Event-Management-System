@@ -30,9 +30,9 @@ const Signup = () => {
       if (formState.role === "user") {
         endpoint = `${baseUrl}/user/createUser`;
       } else if (formState.role === "admin") {
-        endpoint = `${baseUrl}/admin/createUser`;
+        endpoint = `${baseUrl}/admin/createAdmin`;
       } else if (formState.role === "vendor") {
-        endpoint = `${baseUrl}/vendor/createUser`;
+        endpoint = `${baseUrl}/vender/createVender`;
       }
 
       // Make a POST request to the backend for registration

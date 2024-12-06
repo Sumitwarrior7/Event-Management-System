@@ -24,7 +24,7 @@ const Login = () => {
       } else if (role === "admin") {
         endpoint = `${baseUrl}/admin/login`;
       } else if (role === "vendor") {
-        endpoint = `${baseUrl}/vendor/login`;
+        endpoint = `${baseUrl}/vender/login`;
       }
 
       // Make a POST request to the backend

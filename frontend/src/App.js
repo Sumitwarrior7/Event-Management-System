@@ -22,6 +22,7 @@ import "./input.css";
 function App() {
   const { globalState } = useContext(GlobalContext); // Access global state
   const { role } = globalState; // Get role from context
+  console.log("main app",role);
 
   return (
     <div>
@@ -48,8 +49,8 @@ function App() {
         {/* Vendor-Specific Routes */}
         {role === "vendor" && (
           <>
-            <Route exact path="/vendor" element={<VendorMain />} />
             <Route exact path="/vendor/vendor-list" element={<VendorList />} />
+            <Route exact path="/vendor" element={<VendorMain />} />
             <Route exact path="/vendor/your-item" element={<YourItem />} />
             <Route exact path="/vendor/add-new-item" element={<AddNewItem />} />
             <Route exact path="/vendor/transaction" element={<Transaction />} />

@@ -1,31 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const AddEvent = () => {
   const [eventName, setEventName] = useState("");
   const [eventDate, setEventDate] = useState("");
+  const [vendors, setVendors] = useState([]);
   const [selectedVendors, setSelectedVendors] = useState([]);
   const [popupVendorItems, setPopupVendorItems] = useState(null);
 
-  const vendors = [
-    {
-      id: 1,
-      name: "Vendor A",
-      price: 500,
-      items: [
-        { name: "Item 1", image: "https://via.placeholder.com/50" },
-        { name: "Item 2", image: "https://via.placeholder.com/50" },
-      ],
-    },
-    {
-      id: 2,
-      name: "Vendor B",
-      price: 700,
-      items: [
-        { name: "Item 3", image: "https://via.placeholder.com/50" },
-        { name: "Item 4", image: "https://via.placeholder.com/50" },
-      ],
-    },
-  ];
+  const baseUrl = process.env.REACT_APP_BASE_URL;// Replace with your actual base URL
+
+  // Fetch vendors on component load
+  useEffect(() => {
+    const fetchVendors = async () => {
+      try {
+        const response = await axios.get(`${baseUrl}/vender/getAllVender`);
+        setVendors(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error("Error fetching vendors:", error);
+        alert("Failed to load vendors.");
+      }
+    };
+    fetchVendors();
+  }, []);
 
   const handleSelectVendor = (vendorId) => {
     if (!selectedVendors.includes(vendorId)) {
@@ -51,7 +49,7 @@ const AddEvent = () => {
     setPopupVendorItems(null);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!eventName || !eventDate) {
       alert("Please fill out all fields.");
       return;
@@ -69,21 +67,25 @@ const AddEvent = () => {
       totalAmount: calculateTotalAmount(),
     };
 
-    console.log("Event Created:", event);
-    alert("Event successfully created!");
+    try {
+      const response = await axios.post(`${baseUrl}/event/createEvent`, event);
+      alert("Event successfully created!");
+      console.log("Event Created:", response.data);
 
-    // Reset form
-    setEventName("");
-    setEventDate("");
-    setSelectedVendors([]);
+      // Reset form
+      setEventName("");
+      setEventDate("");
+      setSelectedVendors([]);
+    } catch (error) {
+      console.error("Error creating event:", error);
+      alert("Failed to create the event.");
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-      {/* Header Section */}
       <h1 className="text-3xl font-bold text-blue-600 text-center mb-8">Add Event</h1>
 
-      {/* Form Section */}
       <div className="max-w-md mx-auto bg-white rounded-lg shadow p-6 mb-8">
         <div className="mb-4">
           <label className="block text-gray-700 font-medium mb-2">Event Name:</label>
@@ -107,15 +109,15 @@ const AddEvent = () => {
         <h2 className="text-lg font-semibold text-gray-800 mb-4">Total Amount: {calculateTotalAmount()} ₹</h2>
       </div>
 
-      {/* Vendor Cards Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {vendors.map((vendor) => (
           <div
             key={vendor.id}
             className="bg-white rounded-lg shadow p-4 border border-gray-200 hover:shadow-lg transition"
           >
-            <h3 className="text-xl font-bold text-gray-800 mb-2">{vendor.name}</h3>
-            <p className="text-gray-600 mb-4">Price: {vendor.price} ₹</p>
+            <h3 className="text-xl font-bold text-gray-800 mb-2">{vendor.data.name}</h3>
+            <h3 className="text-xl font-bold text-gray-800 mb-2">{vendor.data.email}</h3>
+            <p className="text-gray-600 mb-4">Price: 100 ₹</p>
             <div className="flex gap-2">
               <button
                 onClick={() => handleShowItems(vendor)}
@@ -134,7 +136,6 @@ const AddEvent = () => {
         ))}
       </div>
 
-      {/* Popup Section */}
       {popupVendorItems && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
           <div className="bg-white rounded-lg shadow-lg p-6 w-96 relative">
@@ -163,7 +164,6 @@ const AddEvent = () => {
         </div>
       )}
 
-      {/* Submit Button */}
       <div className="mt-8 text-center">
         <button
           onClick={handleSubmit}

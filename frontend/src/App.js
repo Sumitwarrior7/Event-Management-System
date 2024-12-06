@@ -17,6 +17,8 @@ import Signup from './components/register';
 import AddEvent from './components/User/AddEvent';
 import VendorDashboard from './components/Vendor/vendorDashboard';
 import AdminDashboard from './components/Admin/adminDashboard';
+import './input.css';
+
 
 function App() {
   return (

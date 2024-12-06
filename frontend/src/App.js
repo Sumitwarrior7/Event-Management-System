@@ -18,7 +18,7 @@ import AdminDashboard from "./components/Admin/adminDashboard";
 import VendorDashboard from "./components/Vendor/vendorDashboard";
 import AddEvent from "./components/User/AddEvent";
 import Signup from "./components/register";
-
+import "./input.css";
 function App() {
   const { globalState } = useContext(GlobalContext); // Access global state
   const { role } = globalState; // Get role from context

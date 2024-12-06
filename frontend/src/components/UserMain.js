@@ -49,7 +49,7 @@ function UserMain() {
 
       <div className="text-center mb-6">
         <Link
-          to="/vendor/add-event"
+          to="/user/add-event"
           className="inline-block bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition"
         >
           Add an Event

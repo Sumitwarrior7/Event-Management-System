@@ -12,17 +12,17 @@ import Cart from './components/User/Cart';
 import GuestList from './components/User/GuestList';
 import OrderStatus from './components/User/OrderStatus';
 import Vendor from './components/User/Vendor';
-import AddEvent from './components/User/AddEvent';
 function App() {
   return (
     <div>
      
       <Routes>
+        <Route exact path="/vendor/vendor-list"  element={<VendorList />} />
         <Route exact path="/" element={<Home />} />
         <Route exact path="/login" element={<Login />} />
-        <Route exact path="/register/vendor" element={<Login />} />
-        <Route exact path="/register/admin" element={<Login />} />
-        <Route exact path="/register/user" element={<Login />} />
+        <Route exact path="/register/vendor" element={<RegisterVendor/>} />
+        <Route exact path="/register/admin" element={<RegisterAdmin />} />
+        <Route exact path="/register/user" element={<RegisterUser/>} />
         <Route exact path="/vendor" element={<VendorMain />} />
         <Route exact path="/admin" element={<AdminMain />} />
         <Route exact path="/user" element={<UserMain />} />
@@ -33,7 +33,9 @@ function App() {
         <Route exact path="/user/vendor"  element={<Vendor />} />
         <Route exact path="user/cart"  element={<Cart />} />
         <Route exact path="/user/guest-list"  element={<GuestList />} />
-        <Route exact path="/user/order-status"  element={<OrderStatus />} />
+        <Route exact path="/vendor/order-status"  element={<OrderStatus />} />
+        <Route exact path="/vendor/dashboard"  element={<VendorDashboard />} />
+        <Route exact path="/admin/dashboard"  element={<AdminDashboard />} />
       </Routes>
     </div>
   );

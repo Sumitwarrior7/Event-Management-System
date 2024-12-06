@@ -12,6 +12,12 @@ import Cart from './components/User/Cart';
 import GuestList from './components/User/GuestList';
 import OrderStatus from './components/User/OrderStatus';
 import Vendor from './components/User/Vendor';
+import VendorList from './components/Vendor/vendors';
+import Signup from './components/register';
+import AddEvent from './components/User/AddEvent';
+import VendorDashboard from './components/Vendor/vendorDashboard';
+import AdminDashboard from './components/Admin/adminDashboard';
+
 function App() {
   return (
     <div>

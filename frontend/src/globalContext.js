@@ -1,24 +1,28 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useEffect } from "react";
 
 // Create the context
 export const GlobalContext = createContext();
 
 // Context provider component
 export const GlobalProvider = ({ children }) => {
-  const [globalState, setGlobalState] = useState({
-    role: "tan", // Default role
-    name: "",
-    email: "",
+  // Initialize the state from localStorage or use default values
+  const [globalState, setGlobalState] = useState(() => {
+    const savedState = localStorage.getItem("globalState");
+    return savedState ? JSON.parse(savedState) : {};
   });
 
-  // Enhanced state updater
+  // Enhanced state updater with persistence
   const updateGlobalState = (newState) => {
     setGlobalState((prevState) => {
-      // Only update the role if it's not already set
-      const updatedRole =newState.role;
-      return { ...prevState, ...newState, role: updatedRole };
+      const updatedState = { ...prevState, ...newState };
+      localStorage.setItem("globalState", JSON.stringify(updatedState));
+      return updatedState;
     });
   };
+
+  useEffect(() => {
+    localStorage.setItem("globalState", JSON.stringify(globalState));
+  }, [globalState]);
 
   return (
     <GlobalContext.Provider value={{ globalState, setGlobalState: updateGlobalState }}>

@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
-function Login() {
-  const [name, setName] = useState('');
-  const [role, setRole] = useState('user');
-  const [password, setPassword] = useState('');
+function RegisterAdmin() {
+    const [name, setName] = useState('');
+    const [role, setRole] = useState('admin');
+    const [password, setPassword] = useState('');
+    const [email,setEmail]=useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Logic for form submission (validation, API call, etc.)
-    console.log({ name, role, password });
+    // Logic for form submission or validation can be added here
+    console.log({ name,role,password,email});
   };
 
   return (
     <div>
-      <h1>Login</h1>
+      <h1>RegisterAdmin</h1>
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="name">Name:</label>
@@ -28,18 +30,17 @@ function Login() {
         </div>
 
         <div>
-          <label htmlFor="role">Role:</label>
-          <select 
-            id="role" 
-            value={role} 
-            onChange={(e) => setRole(e.target.value)} 
+          <label htmlFor="email">Email:</label>
+          <input
+            id="email" 
+            value={email} 
+            onChange={(e) => setEmail(e.target.value)} 
             required
-          >
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
-            <option value="vendor">Vendor</option>
-          </select>
+          />
         </div>
+
+        
+        
 
         <div>
           <label htmlFor="password">Password:</label>
@@ -53,10 +54,10 @@ function Login() {
           />
         </div>
 
-        <button type="submit">Login</button>
+        <button type="submit">Register</button>
       </form>
     </div>
   );
 }
 
-export default Login;
+export default RegisterAdmin;

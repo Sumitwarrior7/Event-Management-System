@@ -8,7 +8,7 @@ const AddEvent = () => {
   const [selectedVendors, setSelectedVendors] = useState([]);
   const [popupVendorItems, setPopupVendorItems] = useState(null);
 
-  const baseUrl = process.env.REACT_APP_BASE_URL;// Replace with your actual base URL
+  const baseUrl = process.env.REACT_APP_BASE_URL; // Replace with your actual base URL
 
   // Fetch vendors on component load
   useEffect(() => {
@@ -25,24 +25,31 @@ const AddEvent = () => {
     fetchVendors();
   }, []);
 
-  const handleSelectVendor = (vendorId) => {
-    if (!selectedVendors.includes(vendorId)) {
-      setSelectedVendors([...selectedVendors, vendorId]);
-    }
+  const handleSelectVendor = (vendor) => {
+    const vendorPrice = Array.isArray(vendor.data.items) && vendor.data.items.length > 0
+      ? vendor.data.items.reduce((total, item) => total + Number(item.itemPrice), 0)
+      : 0;
+
+    // Add vendor to selected vendors with their price
+    setSelectedVendors((prevSelectedVendors) => [
+      ...prevSelectedVendors,
+      { id: vendor.id, price: vendorPrice }
+    ]);
   };
 
   const calculateTotalAmount = () => {
-    return selectedVendors.reduce((total, vendorId) => {
-      const vendor = vendors.find((v) => v.id === vendorId);
-      if (vendor) {
-        return total + vendor.price;
-      }
-      return total;
-    }, 0);
+    // Calculate total amount from the selected vendors
+    return selectedVendors.reduce((total, vendor) => total + vendor.price, 0);
   };
 
   const handleShowItems = (vendor) => {
-    setPopupVendorItems(vendor);
+    // Ensure items are initialized as an empty array if undefined
+    const vendorWithItems = { ...vendor, items: vendor.data.items || [] };
+
+    // Calculate the total price of items for this vendor
+    const itemTotal = vendorWithItems.items.reduce((sum, item) => sum + Number(item.itemPrice), 0);
+
+    setPopupVendorItems({ ...vendorWithItems, itemTotal });
   };
 
   const closePopup = () => {
@@ -63,7 +70,7 @@ const AddEvent = () => {
     const event = {
       name: eventName,
       date: eventDate,
-      vendors: selectedVendors,
+      vendors: selectedVendors.map(vendor => vendor.id),
       totalAmount: calculateTotalAmount(),
     };
 
@@ -123,7 +130,9 @@ const AddEvent = () => {
           >
             <h3 className="text-xl font-bold text-gray-800 mb-2">{vendor.data.name}</h3>
             <h3 className="text-xl font-bold text-gray-800 mb-2">{vendor.data.email}</h3>
-            <p className="text-gray-600 mb-4">Price: 100 ₹</p>
+            <p className="text-gray-600 mb-4">Price: {Array.isArray(vendor.data.items) && vendor.data.items.length > 0
+  ? vendor.data.items.reduce((total, item) => total + Number(item.itemPrice), 0)
+  : 0} ₹</p>
             <div className="flex gap-2">
               <button
                 onClick={() => handleShowItems(vendor)}
@@ -132,7 +141,7 @@ const AddEvent = () => {
                 See Items
               </button>
               <button
-                onClick={() => handleSelectVendor(vendor.id)}
+                onClick={() => handleSelectVendor(vendor)}
                 className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
               >
                 Select Vendor
@@ -146,7 +155,7 @@ const AddEvent = () => {
         <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
           <div className="bg-white rounded-lg shadow-lg p-6 w-96 relative">
             <h2 className="text-xl font-bold text-gray-800 mb-4">
-              Items from {popupVendorItems.name}
+              Items from {popupVendorItems.data.name}
             </h2>
             <button
               className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
@@ -155,17 +164,27 @@ const AddEvent = () => {
               ✖
             </button>
             <ul className="space-y-4">
-              {popupVendorItems.items.map((item, index) => (
-                <li key={index} className="flex items-center gap-4">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-12 h-12 rounded-full border border-gray-300"
-                  />
-                  <span className="text-gray-800 font-medium">{item.name}</span>
-                </li>
-              ))}
+              {popupVendorItems.items.length === 0 ? (
+                <li className="text-gray-600 font-medium">No items added yet</li>
+              ) : (
+                popupVendorItems.items.map((item, index) => (
+                  <li key={index} className="flex items-center gap-4">
+                    <img
+                      src={item.image}
+                      alt={item.itemName}
+                      className="w-12 h-12 rounded-full border border-gray-300"
+                    />
+                    <div>
+                      <span className="text-gray-800 font-medium">{item.itemName}</span>
+                      <span className="text-gray-600 block">Price: {item.itemPrice} ₹</span>
+                    </div>
+                  </li>
+                ))
+              )}
             </ul>
+            <p className="text-gray-800 font-semibold mt-4">
+              Total Item Price: {popupVendorItems.itemTotal} ₹
+            </p>
           </div>
         </div>
       )}

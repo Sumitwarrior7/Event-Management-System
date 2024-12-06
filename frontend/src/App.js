@@ -27,8 +27,8 @@ function App() {
         <Route exact path="/vendor/vendor-list"  element={<VendorList />} />
         <Route exact path="/" element={<Home />} />
         <Route exact path="/login" element={<Login />} />
-        <Route exact path="/vendor" element={<VendorMain />} />
-        <Route exact path="/admin" element={<AdminMain />} />
+        <Route exact path="/vendor" element={<VendorDashboard />} />
+        <Route exact path="/admin" element={<AdminDashboard />} />
         <Route exact path="/user" element={<UserMain />} />
         <Route exact path="/register" element={<Signup />} />
         <Route exact path="/vendor/add-event" element={<AddEvent />} />

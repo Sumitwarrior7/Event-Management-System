@@ -1,30 +1,3 @@
-// import React from 'react';
-// import { Routes, Route, Link } from 'react-router-dom';
-// import Vendor from './User/Vendor';
-// import Cart from './User/Cart';
-// import GuestList from './User/GuestList';
-// import OrderStatus from './User/OrderStatus';
-
-// function UserMain() {
-//   return (
-//     <div>
-//       <h1>User Main Page</h1>
-//       <nav>
-//         <ul>
-//           <li><Link to="vendor">Vendor</Link></li>
-//           <li><Link to="cart">Cart</Link></li>
-//           <li><Link to="guest-list">Guest List</Link></li>
-//           <li><Link to="order-status">Order Status</Link></li>
-//         </ul>
-//       </nav>
-
-//     </div>
-//   );
-// }
-
-// export default UserMain;
-
-
 import React from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 
@@ -58,7 +31,7 @@ const eventsData = [
     ]
   },
   {
-    id: 3,
+    id: 4,
     name: "Shaadi",
     date: "24-12-2024",
     vendors: [
@@ -69,25 +42,41 @@ const eventsData = [
 ];
 
 function UserMain() {
-  return (  
-    <div>
-      <h1>User Events</h1>
-      <button>
-        <Link to="/vendor/add-event">Add an Event</Link>
-      </button>
+  return (
+    <div className="min-h-screen bg-gray-100 p-6">
+      {/* Header Section */}
+      <h1 className="text-3xl font-bold text-blue-600 text-center mb-8">User Events</h1>
 
-      <div>
+      <div className="text-center mb-6">
+        <Link
+          to="/vendor/add-event"
+          className="inline-block bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition"
+        >
+          Add an Event
+        </Link>
+      </div>
+
+      {/* Events Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {eventsData.map((event) => (
-          <div key={event.id} style={{ marginBottom: '20px', padding: '20px', border: '1px solid #ccc', borderRadius: '8px' }}>
-            <h2>{event.name}</h2>
-            <p>Date: {event.date}</p>
+          <div
+            key={event.id}
+            className="bg-white rounded-lg shadow p-6 border border-gray-200 hover:shadow-lg transition"
+          >
+            <h2 className="text-xl font-bold text-gray-800 mb-2">{event.name}</h2>
+            <p className="text-gray-600 mb-4">Date: {event.date}</p>
 
             <div>
-              <h3>Vendors:</h3>
-              <ul>
+              <h3 className="text-lg font-semibold text-gray-700 mb-2">Vendors:</h3>
+              <ul className="list-disc list-inside space-y-1">
                 {event.vendors.map((vendor, index) => (
                   <li key={index}>
-                    <Link to={vendor.link}>{vendor.name}</Link>
+                    <Link
+                      to={vendor.link}
+                      className="text-blue-500 hover:underline"
+                    >
+                      {vendor.name}
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -100,4 +89,3 @@ function UserMain() {
 }
 
 export default UserMain;
-

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 
-
 const AddEvent = () => {
     const [eventName, setEventName] = useState('');
     const [eventDate, setEventDate] = useState('');
@@ -26,7 +25,6 @@ const AddEvent = () => {
                 { name: 'Item 4', image: 'https://via.placeholder.com/50' },
             ],
         },
-        // Add more vendors as needed
     ];
 
     const handleSelectVendor = (vendorId) => {
@@ -51,6 +49,33 @@ const AddEvent = () => {
 
     const closePopup = () => {
         setPopupVendorItems(null);
+    };
+
+    const handleSubmit = () => {
+        if (!eventName || !eventDate) {
+            alert('Please fill out all fields.');
+            return;
+        }
+
+        if (selectedVendors.length === 0) {
+            alert('Please select at least one vendor.');
+            return;
+        }
+
+        const event = {
+            name: eventName,
+            date: eventDate,
+            vendors: selectedVendors,
+            totalAmount: calculateTotalAmount(),
+        };
+
+        console.log('Event Created:', event);
+        alert('Event successfully created!');
+        
+        // Reset form
+        setEventName('');
+        setEventDate('');
+        setSelectedVendors([]);
     };
 
     return (
@@ -105,6 +130,10 @@ const AddEvent = () => {
                     </div>
                 </div>
             )}
+
+            <button onClick={handleSubmit} className="submit-button">
+                Create Event
+            </button>
         </div>
     );
 };

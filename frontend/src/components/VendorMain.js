@@ -10,9 +10,7 @@ function VendorMain() {
       <h1>Vendor Main Page</h1>
       <nav>
         <ul>
-          <li><Link to="/vendor/your-item">Your Item</Link></li>
-          <li><Link to="/vendor/add-new-item">Add New Item</Link></li>
-          <li><Link to="/vendor/transaction">Transaction</Link></li>
+
         </ul>
       </nav>
     </div>

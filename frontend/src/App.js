@@ -12,6 +12,7 @@ import Cart from './components/User/Cart';
 import GuestList from './components/User/GuestList';
 import OrderStatus from './components/User/OrderStatus';
 import Vendor from './components/User/Vendor';
+import AddEvent from './components/User/AddEvent';
 function App() {
   return (
     <div>
@@ -25,6 +26,7 @@ function App() {
         <Route exact path="/vendor" element={<VendorMain />} />
         <Route exact path="/admin" element={<AdminMain />} />
         <Route exact path="/user" element={<UserMain />} />
+        <Route exact path="/vendor/add-event" element={<AddEvent />} />
         <Route exact path="/vendor/your-item" element={<YourItem />} />
         <Route exact path="/vendor/add-new-item" element={<AddNewItem />} />
         <Route exact path="/vendor/transaction" element={<Transaction />} />

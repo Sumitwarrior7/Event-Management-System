@@ -6,6 +6,7 @@ router
   .get("/getAllVender", venderController.getAllVender)
   .post("/createVender", venderController.createVender)
   .post("/getVender", venderController.getVender)
-  .post("/login", venderController.login);
+  .post("/login", venderController.login)
+  .post("/addItem", venderController.addItem);
 
 module.exports = router;

@@ -12,21 +12,17 @@ import Cart from './components/User/Cart';
 import GuestList from './components/User/GuestList';
 import OrderStatus from './components/User/OrderStatus';
 import Vendor from './components/User/Vendor';
-import VendorList from './components/Vendor/vendors';
 function App() {
   return (
     <div>
-     
       <Routes>
         <Route exact path="/vendor/vendor-list"  element={<VendorList />} />
         <Route exact path="/" element={<Home />} />
         <Route exact path="/login" element={<Login />} />
-        <Route exact path="/register/vendor" element={<RegisterVendor/>} />
-        <Route exact path="/register/admin" element={<RegisterAdmin />} />
-        <Route exact path="/register/user" element={<RegisterUser/>} />
         <Route exact path="/vendor" element={<VendorMain />} />
         <Route exact path="/admin" element={<AdminMain />} />
         <Route exact path="/user" element={<UserMain />} />
+        <Route exact path="/register" element={<Signup />} />
         <Route exact path="/vendor/add-event" element={<AddEvent />} />
         <Route exact path="/vendor/your-item" element={<YourItem />} />
         <Route exact path="/vendor/add-new-item" element={<AddNewItem />} />

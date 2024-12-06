@@ -57,3 +57,33 @@ module.exports.login = async function (req, res) {
     console.log(error.message);
   }
 };
+
+module.exports.addItem = async function (req, res) {
+  const useremail = req.body.email;
+  const newItem = req.body.item;
+
+  try {
+    const snapsh = db.collection("venders");
+    const ref = await snapsh.where("email", "==", useremail).get();
+
+    if (ref.empty) {
+      return res.status(404).json({ message: "Vendor not found" });
+    }
+
+    const batch = db.batch();
+
+    ref.forEach((doc) => {
+      const currentItems = doc.data().items || [];
+      const updatedItems = [...currentItems, newItem];
+      const docRef = snapsh.doc(doc.id);
+
+      batch.update(docRef, { items: updatedItems });
+    });
+
+    await batch.commit();
+    res.status(200).json({ message: "Item added successfully" });
+  } catch (error) {
+    console.error("Error adding item:", error);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
+  }
+};

@@ -1,25 +1,82 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { GlobalContext } from "../globalContext";
+// Import baseUrl from .env file
+const baseUrl = process.env.REACT_APP_BASE_URL;
 
 const Signup = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [role, setRole] = useState("user");
+  const { globalState, setGlobalState } = useContext(GlobalContext);
+  const [formState, setFormState] = useState({
+    name: globalState.name || "",
+    email: globalState.email || "",
+    password: "",
+    role: globalState.role || "user",
+  });
+  const [errorMessage, setErrorMessage] = useState("");
+
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormState((prevState) => ({ ...prevState, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Logic for form submission (e.g., API call)
-    console.log({ name, email, password, role });
-    alert("Registration Successful!");
-    navigate("/"); // Redirect to login after successful registration
+
+    try {
+      // Determine the endpoint based on the role
+      let endpoint = "";
+      if (formState.role === "user") {
+        endpoint = `${baseUrl}/user/createUser`;
+      } else if (formState.role === "admin") {
+        endpoint = `${baseUrl}/admin/createUser`;
+      } else if (formState.role === "vendor") {
+        endpoint = `${baseUrl}/vendor/createUser`;
+      }
+
+      // Make a POST request to the backend for registration
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formState.name,
+          email: formState.email,
+          password: formState.password,
+          role: formState.role,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Update global state with registration details
+        setGlobalState({
+          ...formState,
+        });
+
+        console.log("Registered User:", formState);
+        alert("Registration Successful!");
+        navigate("/login"); // Redirect to login after successful registration
+      } else {
+        // Handle registration errors
+        setErrorMessage(data.message || "Registration failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      setErrorMessage("An error occurred. Please try again.");
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-6 rounded shadow-md w-full max-w-sm">
         <h1 className="text-2xl font-bold mb-6 text-center">Signup</h1>
+        {errorMessage && (
+          <div className="mb-4 text-red-500 text-center">{errorMessage}</div>
+        )}
         <form onSubmit={handleSubmit}>
           {/* Name Field */}
           <div className="mb-4">
@@ -29,8 +86,9 @@ const Signup = () => {
             <input
               type="text"
               id="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              name="name"
+              value={formState.name}
+              onChange={handleChange}
               placeholder="Enter your name"
               className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
@@ -45,8 +103,9 @@ const Signup = () => {
             <input
               type="email"
               id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              name="email"
+              value={formState.email}
+              onChange={handleChange}
               placeholder="Enter your email"
               className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
@@ -61,8 +120,9 @@ const Signup = () => {
             <input
               type="password"
               id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              name="password"
+              value={formState.password}
+              onChange={handleChange}
               placeholder="Enter your password"
               className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
@@ -76,8 +136,9 @@ const Signup = () => {
             </label>
             <select
               id="role"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
+              name="role"
+              value={formState.role}
+              onChange={handleChange}
               className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             >
@@ -90,7 +151,7 @@ const Signup = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200"
+            className="w-full bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition duration-200"
           >
             Signup
           </button>

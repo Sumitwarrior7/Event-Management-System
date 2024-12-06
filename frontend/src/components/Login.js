@@ -1,40 +1,93 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { GlobalContext } from "../globalContext";
 
-function Login() {
-  const [name, setName] = useState("");
+// Import baseUrl from .env file
+const baseUrl = process.env.REACT_APP_BASE_URL;
+
+const Login = () => {
+  const { globalState, setGlobalState } = useContext(GlobalContext);
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("user");
+  const [role, setRole] = useState(globalState.role);
+  const [errorMessage, setErrorMessage] = useState("");
+
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Logic for form submission (e.g., validation or API call)
-    console.log({ name, password, role });
+    try {
+      // Determine the endpoint based on the role
+      let endpoint = "";
+      if (role === "user") {
+        endpoint = `${baseUrl}/user/login`;
+      } else if (role === "admin") {
+        endpoint = `${baseUrl}/admin/login`;
+      } else if (role === "vendor") {
+        endpoint = `${baseUrl}/vendor/login`;
+      }
+
+      // Make a POST request to the backend
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Update global state with login details
+        setGlobalState({
+          ...globalState,
+          email: data.email,
+          role: role,
+          name: data.name, // Assuming the backend returns the user's name
+        });
+
+        console.log("Global State Updated:", { email: data.email, role });
+        // Redirect to appropriate dashboard
+        if (role === "user") {
+          navigate("/user");
+        } else if (role === "admin") {
+          navigate("/admin");
+        } else if (role === "vendor") {
+          navigate("/vendor");
+        }
+      } else {
+        // Handle errors (e.g., invalid credentials)
+        setErrorMessage(data.message || "Login failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      setErrorMessage("An error occurred. Please try again.");
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-6 rounded shadow-md w-full max-w-sm">
         <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
+        {errorMessage && (
+          <div className="mb-4 text-red-500 text-center">{errorMessage}</div>
+        )}
         <form onSubmit={handleSubmit}>
-          {/* Name Field */}
           <div className="mb-4">
-            <label htmlFor="name" className="block mb-2 text-gray-700">
-              Name:
+            <label htmlFor="email" className="block mb-2 text-gray-700">
+              Email:
             </label>
             <input
-              type="text"
-              id="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Enter your name"
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
               className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
-
-          {/* Role Dropdown */}
           <div className="mb-4">
             <label htmlFor="role" className="block mb-2 text-gray-700">
               Role:
@@ -51,8 +104,6 @@ function Login() {
               <option value="vendor">Vendor</option>
             </select>
           </div>
-
-          {/* Password Field */}
           <div className="mb-4">
             <label htmlFor="password" className="block mb-2 text-gray-700">
               Password:
@@ -67,8 +118,6 @@ function Login() {
               required
             />
           </div>
-
-          {/* Submit Button */}
           <button
             type="submit"
             className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200"
@@ -76,20 +125,20 @@ function Login() {
             Login
           </button>
         </form>
-
-        {/* Signup Redirect */}
-        <div className="mt-6 text-center">
-          <p className="text-gray-700">Don't have an account?</p>
-          <button
-            onClick={() => navigate("/register")}
-            className="text-blue-500 hover:underline mt-2"
-          >
-            Register Here
-          </button>
+        <div className="mt-4 text-center">
+          <p className="text-gray-700">
+            Don't have an account?{" "}
+            <button
+              onClick={() => navigate("/register")}
+              className="text-blue-500 hover:underline"
+            >
+              Register here
+            </button>
+          </p>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default Login;

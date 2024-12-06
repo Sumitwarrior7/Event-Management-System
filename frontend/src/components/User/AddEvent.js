@@ -30,10 +30,14 @@ const AddEvent = () => {
       ? vendor.data.items.reduce((total, item) => total + Number(item.itemPrice), 0)
       : 0;
 
-    // Add vendor to selected vendors with their price
+    // Add full vendor details to selected vendors
     setSelectedVendors((prevSelectedVendors) => [
       ...prevSelectedVendors,
-      { id: vendor.id, price: vendorPrice }
+      {
+        name: vendor.data.name,
+        email: vendor.data.email,
+        price: vendorPrice,
+      },
     ]);
   };
 
@@ -70,7 +74,7 @@ const AddEvent = () => {
     const event = {
       name: eventName,
       date: eventDate,
-      vendors: selectedVendors.map(vendor => vendor.id),
+      vendors: selectedVendors, // Include all vendor details
       totalAmount: calculateTotalAmount(),
     };
 
@@ -91,113 +95,119 @@ const AddEvent = () => {
 
   return (
     <>
-    
-    <div className="min-h-screen bg-gray-100 p-6" style={{
+      <div
+        className="min-h-screen bg-gray-100 p-6"
+        style={{
           backgroundImage:
             "url('https://c4.wallpaperflare.com/wallpaper/986/210/423/party-light-event-people-wallpaper-preview.jpg')",
-        }}>
-      
-      <h1 className="text-3xl font-bold text-blue-600 text-center mb-8">Add Event</h1>
+        }}
+      >
+        <h1 className="text-3xl font-bold text-blue-600 text-center mb-8">Add Event</h1>
 
-      <div className="max-w-md mx-auto bg-white rounded-lg shadow p-6 mb-8">
-        <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-2">Event Name:</label>
-          <input
-            type="text"
-            placeholder="Event Name"
-            value={eventName}
-            onChange={(e) => setEventName(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+        <div className="max-w-md mx-auto bg-white rounded-lg shadow p-6 mb-8">
+          <div className="mb-4">
+            <label className="block text-gray-700 font-medium mb-2">Event Name:</label>
+            <input
+              type="text"
+              placeholder="Event Name"
+              value={eventName}
+              onChange={(e) => setEventName(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 font-medium mb-2">Event Date:</label>
+            <input
+              type="date"
+              value={eventDate}
+              onChange={(e) => setEventDate(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <h2 className="text-lg font-semibold text-gray-800 mb-4">
+            Total Amount: {calculateTotalAmount()} ₹
+          </h2>
         </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-2">Event Date:</label>
-          <input
-            type="date"
-            value={eventDate}
-            onChange={(e) => setEventDate(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">Total Amount: {calculateTotalAmount()} ₹</h2>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {vendors.map((vendor) => (
-          <div
-            key={vendor.id}
-            className="bg-white rounded-lg shadow p-4 border border-gray-200 hover:shadow-lg transition"
-          >
-            <h3 className="text-xl font-bold text-gray-800 mb-2">{vendor.data.name}</h3>
-            <h3 className="text-xl font-bold text-gray-800 mb-2">{vendor.data.email}</h3>
-            <p className="text-gray-600 mb-4">Price: {Array.isArray(vendor.data.items) && vendor.data.items.length > 0
-  ? vendor.data.items.reduce((total, item) => total + Number(item.itemPrice), 0)
-  : 0} ₹</p>
-            <div className="flex gap-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {vendors.map((vendor) => (
+            <div
+              key={vendor.data.email}
+              className="bg-white rounded-lg shadow p-4 border border-gray-200 hover:shadow-lg transition"
+            >
+              <h3 className="text-xl font-bold text-gray-800 mb-2">{vendor.data.name}</h3>
+              <p className="text-gray-600 mb-4">
+                Price:{" "}
+                {Array.isArray(vendor.data.items) && vendor.data.items.length > 0
+                  ? vendor.data.items.reduce((total, item) => total + Number(item.itemPrice), 0)
+                  : 0}{" "}
+                ₹
+              </p>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handleShowItems(vendor)}
+                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                >
+                  See Items
+                </button>
+                <button
+                  onClick={() => handleSelectVendor(vendor)}
+                  className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                >
+                  Select Vendor
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {popupVendorItems && (
+          <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+            <div className="bg-white rounded-lg shadow-lg p-6 w-96 relative">
+              <h2 className="text-xl font-bold text-gray-800 mb-4">
+                Items from {popupVendorItems.data.name}
+              </h2>
               <button
-                onClick={() => handleShowItems(vendor)}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                onClick={closePopup}
               >
-                See Items
+                ✖
               </button>
-              <button
-                onClick={() => handleSelectVendor(vendor)}
-                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-              >
-                Select Vendor
-              </button>
+              <ul className="space-y-4">
+                {popupVendorItems.items.length === 0 ? (
+                  <li className="text-gray-600 font-medium">No items added yet</li>
+                ) : (
+                  popupVendorItems.items.map((item, index) => (
+                    <li key={index} className="flex items-center gap-4">
+                      <img
+                        src={item.image}
+                        alt={item.itemName}
+                        className="w-12 h-12 rounded-full border border-gray-300"
+                      />
+                      <div>
+                        <span className="text-gray-800 font-medium">{item.itemName}</span>
+                        <span className="text-gray-600 block">Price: {item.itemPrice} ₹</span>
+                      </div>
+                    </li>
+                  ))
+                )}
+              </ul>
+              <p className="text-gray-800 font-semibold mt-4">
+                Total Item Price: {popupVendorItems.itemTotal} ₹
+              </p>
             </div>
           </div>
-        ))}
-      </div>
+        )}
 
-      {popupVendorItems && (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-96 relative">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">
-              Items from {popupVendorItems.data.name}
-            </h2>
-            <button
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-              onClick={closePopup}
-            >
-              ✖
-            </button>
-            <ul className="space-y-4">
-              {popupVendorItems.items.length === 0 ? (
-                <li className="text-gray-600 font-medium">No items added yet</li>
-              ) : (
-                popupVendorItems.items.map((item, index) => (
-                  <li key={index} className="flex items-center gap-4">
-                    <img
-                      src={item.image}
-                      alt={item.itemName}
-                      className="w-12 h-12 rounded-full border border-gray-300"
-                    />
-                    <div>
-                      <span className="text-gray-800 font-medium">{item.itemName}</span>
-                      <span className="text-gray-600 block">Price: {item.itemPrice} ₹</span>
-                    </div>
-                  </li>
-                ))
-              )}
-            </ul>
-            <p className="text-gray-800 font-semibold mt-4">
-              Total Item Price: {popupVendorItems.itemTotal} ₹
-            </p>
-          </div>
+        <div className="mt-8 text-center">
+          <button
+            onClick={handleSubmit}
+            className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700"
+          >
+            Create Event
+          </button>
         </div>
-      )}
-
-      <div className="mt-8 text-center">
-        <button
-          onClick={handleSubmit}
-          className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700"
-        >
-          Create Event
-        </button>
       </div>
-    </div>
     </>
   );
 };

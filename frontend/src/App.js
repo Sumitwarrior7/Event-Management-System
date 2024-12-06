@@ -12,6 +12,7 @@ import Cart from './components/User/Cart';
 import GuestList from './components/User/GuestList';
 import OrderStatus from './components/User/OrderStatus';
 import Vendor from './components/User/Vendor';
+import VendorList from './components/Vendor/vendors';
 function App() {
   return (
     <div>

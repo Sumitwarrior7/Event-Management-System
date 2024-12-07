@@ -20,52 +20,73 @@ import AddEvent from "./components/User/AddEvent";
 import Signup from "./components/register";
 import VendorDetails from "./components/User/SeeVendor";
 import "./input.css";
+import Header from "./components/header";
+
 function App() {
   const { globalState } = useContext(GlobalContext); // Access global state
-  const { role } = globalState; // Get role from context
-  console.log("main app",role);
+  const { role, email } = globalState; // Get role and email from context
+  console.log("sumit",role, email)
+  // Redirect user to the respective dashboard if they are already logged in
+  const redirectToDashboard = () => {
+    if (role === "user") {
+      return <Navigate to="/user" />;
+    } else if (role === "vendor") {
+      return <Navigate to="/vendor" />;
+    } else if (role === "admin") {
+      return <Navigate to="/admin" />;
+    }
+    return null;
+  };
 
   return (
     <div>
+      <Header />
       <Routes>
+        {/* Redirect authenticated user to their dashboard if visiting login/signup */}
+        <Route
+          path="/login"
+          element={role ? redirectToDashboard() : <Login />}
+        />
+        <Route
+          path="/register"
+          element={role ? redirectToDashboard() : <Signup />}
+        />
+
         {/* Common Routes */}
-        <Route exact path="/" element={<Home />} />
-        <Route exact path="/login" element={<Login />} />
-        <Route exact path="/vendor" element={<VendorMain />} />
-        <Route exact path="/admin" element={<AdminMain />} />
-        <Route exact path="/user" element={<UserMain />} />
-        <Route exact path="/register" element={<Signup />} />
+        <Route path="/" element={<Home />} />
+        {/* <Route path="/vendor" element={<VendorMain />} /> */}
+        <Route path="/admin" element={<AdminMain />} />
+        <Route path="/user" element={<UserMain />} />
 
         {/* User-Specific Routes */}
         {role === "user" && (
           <>
-            <Route exact path="/user" element={<UserMain />} />
-            <Route exact path="/user/cart" element={<Cart />} />
-            <Route exact path="/user/guest-list" element={<GuestList />} />
-            <Route exact path="/user/vendor" element={<Vendor />} />
-            <Route exact path="/user/add-event" element={<AddEvent />} />
-            <Route path="/user/see-vendor/:vendor_id" element={<VendorDetails />} />
+            <Route path="/user" element={<UserMain />} />
+            <Route path="/user/cart" element={<Cart />} />
+            <Route path="/user/guest-list" element={<GuestList />} />
+            <Route path="/user/vendor" element={<Vendor />} />
+            <Route path="/user/add-event" element={<AddEvent />} />
           </>
         )}
 
         {/* Vendor-Specific Routes */}
         {role === "vendor" && (
           <>
-            <Route exact path="/vendor/vendor-list" element={<VendorList />} />
-            <Route exact path="/vendor" element={<VendorDashboard />} />
-            <Route exact path="/vendor/your-item" element={<YourItem />} />
-            <Route exact path="/vendor/add-new-item" element={<AddNewItem />} />
-            <Route exact path="/vendor/transaction" element={<Transaction />} />
-            <Route exact path="/vendor/order-status" element={<OrderStatus />} />
-            <Route exact path="/vendor/dashboard" element={<VendorDashboard />} />
+          {/* {console.log("hi",email)} */}
+            <Route path="/vendor/vendor-list" element={<VendorList />} />
+            <Route path="/vendor/your-item" element={<YourItem />} />
+            <Route path="/vendor/add-new-item" element={<AddNewItem />} />
+            <Route path="/vendor/transaction" element={<Transaction />} />
+            <Route path="/vendor/order-status" element={<OrderStatus />} />
+            <Route path="/vendor" element={<VendorDashboard email={email} />} />
           </>
         )}
 
         {/* Admin-Specific Routes */}
         {role === "admin" && (
           <>
-            <Route exact path="/admin" element={<AdminDashboard />} />
-            <Route exact path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
           </>
         )}
 

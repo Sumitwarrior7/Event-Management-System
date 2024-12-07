@@ -18,6 +18,7 @@ import AdminDashboard from "./components/Admin/adminDashboard";
 import VendorDashboard from "./components/Vendor/vendorDashboard";
 import AddEvent from "./components/User/AddEvent";
 import Signup from "./components/register";
+import VendorDetails from "./components/User/SeeVendor";
 import "./input.css";
 import Header from "./components/header";
 

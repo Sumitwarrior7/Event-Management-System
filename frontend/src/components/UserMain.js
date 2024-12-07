@@ -93,7 +93,7 @@ function UserMain() {
                   {event.vendors.map((vendor, index) => (
                     <li key={index}>
                       <Link
-                        to={vendor.link}
+                        to="./see-vendor/1"
                         className="text-blue-600 hover:underline font-medium"
                       >
                         {vendor.name}

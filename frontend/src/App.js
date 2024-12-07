@@ -18,6 +18,7 @@ import AdminDashboard from "./components/Admin/adminDashboard";
 import VendorDashboard from "./components/Vendor/vendorDashboard";
 import AddEvent from "./components/User/AddEvent";
 import Signup from "./components/register";
+import VendorDetails from "./components/User/SeeVendor";
 import "./input.css";
 function App() {
   const { globalState } = useContext(GlobalContext); // Access global state
@@ -43,6 +44,7 @@ function App() {
             <Route exact path="/user/guest-list" element={<GuestList />} />
             <Route exact path="/user/vendor" element={<Vendor />} />
             <Route exact path="/user/add-event" element={<AddEvent />} />
+            <Route path="/user/see-vendor/:vendor_id" element={<VendorDetails />} />
           </>
         )}
 

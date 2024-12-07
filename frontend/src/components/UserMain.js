@@ -1,56 +1,31 @@
-import React from 'react';
-import { Routes, Route, Link } from 'react-router-dom';
-
-// Example data for events
-const eventsData = [
-  {
-    id: 1,
-    name: "Tech Conference 2024",
-    date: "12-12-2024",
-    vendors: [
-      { name: "Vendor 1", link: "/vendor1" },
-      { name: "Vendor 2", link: "/vendor2" }
-    ]
-  },
-  {
-    id: 2,
-    name: "Art Exhibition",
-    date: "15-12-2024",
-    vendors: [
-      { name: "Vendor 3", link: "/vendor3" },
-      { name: "Vendor 4", link: "/vendor4" }
-    ]
-  },
-  {
-    id: 3,
-    name: "Sports Fest",
-    date: "21-12-2024",
-    vendors: [
-      { name: "Vendor 1", link: "/vendor1" },
-      { name: "Vendor 4", link: "/vendor4" }
-    ]
-  },
-  {
-    id: 4,
-    name: "Shaadi",
-    date: "24-12-2024",
-    vendors: [
-      { name: "Vendor 1", link: "/vendor1" },
-      { name: "Vendor 3", link: "/vendor3" }
-    ]
-  },
-  {
-    id: 5,
-    name: "Music Show",
-    date: "24612-2024",
-    vendors: [
-      { name: "Vendor 7", link: "/vendor7" },
-      { name: "Vendor 3", link: "/vendor3" }
-    ]
-  },
-];
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
 
 function UserMain() {
+  const [eventsData, setEventsData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const baseUrl = process.env.REACT_APP_BASE_URL;
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await axios.get(`${baseUrl}/event/getAllEvent`);
+        const data = Array.isArray(response.data) ? response.data : [];
+        console.log(data);
+        setEventsData(data);
+      } catch (error) {
+        console.error("Error fetching events:", error);
+        alert("Failed to load events.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
   return (
     <div className="relative min-h-screen overflow-hidden">
       {/* Background Layer */}
@@ -78,33 +53,63 @@ function UserMain() {
         </div>
 
         {/* Events Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {eventsData.map((event) => (
-            <div
-              key={event.id}
-              className="bg-white rounded-lg shadow-lg p-8 border border-gray-300 hover:shadow-2xl transition"
-            >
-              <h2 className="text-2xl font-bold text-gray-800 mb-3">{event.name}</h2>
-              <p className="text-gray-600 text-lg mb-4">Date: {event.date}</p>
+        {isLoading ? (
+          <p className="text-white text-xl font-semibold">Loading events...</p>
+        ) : eventsData.length === 0 ? (
+          <p className="text-white text-xl font-semibold">No events yet.</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {eventsData.map((event) => {
+              // Ensure event and its data property exist
+              if (!event || !event.data) {
+                console.warn("Invalid event data:", event);
+                return null;
+              }
 
-              <div>
-                <h3 className="text-xl font-semibold text-gray-700 mb-3">Vendors:</h3>
-                <ul className="list-disc list-inside space-y-2">
-                  {event.vendors.map((vendor, index) => (
-                    <li key={index}>
-                      <Link
-                        to="./see-vendor/1"
-                        className="text-blue-600 hover:underline font-medium"
-                      >
-                        {vendor.name}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          ))}
-        </div>
+              const { name, date, totalAmount, vendors } = event.data;
+
+              return (
+                <div
+                  key={event.id || event._id}
+                  className="bg-white rounded-lg shadow-lg p-8 border border-gray-300 hover:shadow-2xl transition"
+                >
+                  {/* Event Details */}
+                  <h2 className="text-2xl font-bold text-gray-800 mb-3">{name || "Unnamed Event"}</h2>
+                  <p className="text-gray-600 text-lg mb-4">Date: {date || "N/A"}</p>
+                  <p className="text-gray-600 text-lg mb-4">
+                    Total Amount: {totalAmount ? `${totalAmount} ₹` : "N/A"}
+                  </p>
+
+                  {/* Vendors Section */}
+                  <div>
+                    <h3 className="text-xl font-semibold text-gray-700 mb-3">Vendors:</h3>
+                    <ul className="list-disc list-inside space-y-2">
+                      {(vendors || []).map((vendor, index) => (
+                        <li key={index} className="text-gray-800">
+                          <p>
+                            <strong>Name:</strong> {vendor?.name || "N/A"}
+                          </p>
+                          <p>
+                            <strong>Email:</strong>{" "}
+                            <a
+                              href={`mailto:${vendor?.email || ""}`}
+                              className="text-blue-600 hover:underline"
+                            >
+                              {vendor?.email || "N/A"}
+                            </a>
+                          </p>
+                          <p>
+                            <strong>Price:</strong> {vendor?.price ? `${vendor.price} ₹` : "N/A"}
+                          </p>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

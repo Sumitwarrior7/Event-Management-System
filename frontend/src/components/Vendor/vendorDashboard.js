@@ -1,14 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios"; // Ensure axios is installed
 
-const VendorDashboard = () => {
+const VendorDashboard = ({email}) => {
+  const [vendor, setVendor] = useState(null);
   const [products, setProducts] = useState([]);
   const [newProduct, setNewProduct] = useState({
     name: "",
     price: "",
     image: null,
   });
-
   const [editingProduct, setEditingProduct] = useState(null);
+  const navigate = useNavigate(); 
+  // Fetch vendor data when the component mounts
+  useEffect(() => {
+    const fetchVendor = async () => {
+      try {
+        const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/vender/getVender`, { email });
+        setVendor(response.data); // Set the vendor object
+        console.log("free",response.data[0].data.items);
+        setProducts(response.data[0].data.items || []); // Update products with vendor items
+      } catch (error) {
+        console.error("Error fetching vendor data:", error);
+      }
+    };
+
+    if (email) {
+      console.log("high hiils up")
+      fetchVendor();
+    }else{
+      console.log("low hiils up")
+
+    }
+  }, [email]);
 
   // Handle input changes for the add/edit product form
   const handleInputChange = (e) => {
@@ -22,10 +46,8 @@ const VendorDashboard = () => {
   // Add new product logic
   const handleAddProduct = () => {
     if (newProduct.name && newProduct.price && newProduct.image) {
-      setProducts((prev) => [
-        ...prev,
-        { ...newProduct, id: Date.now() },
-      ]);
+      const newProductItem = { ...newProduct, id: Date.now() };
+      setProducts((prev) => [...prev, newProductItem]);
       setNewProduct({ name: "", price: "", image: null });
     } else {
       alert("Please fill out all fields!");
@@ -46,7 +68,9 @@ const VendorDashboard = () => {
       image: product.image,
     });
   };
-
+  const handleAddNewItemRedirect = () => {
+    navigate("/vendor/add-new-item");
+  };
   const handleUpdateProduct = () => {
     setProducts((prev) =>
       prev.map((product) =>
@@ -59,55 +83,16 @@ const VendorDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 p-4">
-      {/* Header Section */}
-      <div className="bg-blue-600 text-white p-4 flex justify-between items-center">
-        <h1 className="text-lg font-bold">Welcome 'Vendor Name'</h1>
-        <div className="flex space-x-4">
-          <button className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded">Product Status</button>
-          <button className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded">Request Item</button>
-          <button className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded">View Product</button>
-          <button className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded">Log Out</button>
-        </div>
-      </div>
-
       {/* Content Section */}
       <div className="mt-6 p-4 bg-white rounded shadow">
         {/* Add/Edit Product Form */}
-        <div className="mb-8">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-            <input
-              type="text"
-              name="name"
-              placeholder="Product Name"
-              value={newProduct.name}
-              onChange={handleInputChange}
-              className="border p-2 rounded w-full"
-            />
-            <input
-              type="text"
-              name="price"
-              placeholder="Product Price"
-              value={newProduct.price}
-              onChange={handleInputChange}
-              className="border p-2 rounded w-full"
-            />
-            <input
-              type="file"
-              name="image"
-              onChange={handleInputChange}
-              className="border p-2 rounded w-full"
-            />
-          </div>
-          <button
-            onClick={editingProduct ? handleUpdateProduct : handleAddProduct}
-            className={`mt-4 ${
-              editingProduct ? "bg-yellow-500 hover:bg-yellow-600" : "bg-blue-500 hover:bg-blue-600"
-            } text-white px-6 py-2 rounded`}
-          >
-            {editingProduct ? "Update Product" : "Add The Product"}
-          </button>
-        </div>
-
+        {/* add a button here which will redirect to vendor/add-new-item*/}
+        <button
+          onClick={handleAddNewItemRedirect}
+          className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded mb-4"
+        >
+          Add New Product
+        </button>
         {/* Product List */}
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 text-center font-bold bg-blue-600 text-white p-2 rounded">
           <span>Product Image</span>
@@ -115,6 +100,7 @@ const VendorDashboard = () => {
           <span>Product Price</span>
           <span>Action</span>
         </div>
+        {console.log(products)}
         {products.length > 0 ? (
           products.map((product) => (
             <div
@@ -124,16 +110,16 @@ const VendorDashboard = () => {
               <div className="w-20 h-20 bg-gray-300 mx-auto flex items-center justify-center">
                 {product.image ? (
                   <img
-                    src={URL.createObjectURL(product.image)}
-                    alt={product.name}
+                    src={product.imageUrl}
+                    alt={product.itemName}
                     className="w-full h-full object-cover"
                   />
                 ) : (
                   "No Image"
                 )}
               </div>
-              <span>{product.name}</span>
-              <span>Rs. {product.price}</span>
+              <span>{product.itemName}</span>
+              <span>Rs. {product.itemPrice}</span>
               <div className="flex space-x-2 justify-center">
                 <button
                   onClick={() => handleDeleteProduct(product.id)}
@@ -151,7 +137,7 @@ const VendorDashboard = () => {
             </div>
           ))
         ) : (
-          <p className="text-center text-gray-500 mt-4">No products added yet.</p>
+          <p className="text-center text-gray-500 mt-4">No items added yet.</p>
         )}
       </div>
     </div>

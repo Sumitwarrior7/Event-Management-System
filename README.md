@@ -23,8 +23,6 @@
 - **Backend**: 
   - Node.js
   - Express.js
-
-- **Database**: 
   - Firestore
 
 ## Installation
@@ -74,10 +72,10 @@ npm start
 
 ```bash
 cd backend
-npm start
+nodemon server.js
 ```
 
-The backend should be running on `http://localhost:5000`, and the frontend should be accessible at `http://localhost:3000`.
+The backend should be running on `http://localhost:8000`, and the frontend should be accessible at `http://localhost:3000`.
 
 ## Usage
 

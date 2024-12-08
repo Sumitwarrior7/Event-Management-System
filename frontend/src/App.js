@@ -55,7 +55,7 @@ function App() {
         {/* Common Routes */}
         <Route path="/" element={<Home />} />
         {/* <Route path="/vendor" element={<VendorMain />} /> */}
-        <Route path="/admin" element={<AdminMain />} />
+        {/* <Route path="/admin" element={<AdminMain />} /> */}
         <Route path="/user" element={<UserMain />} />
 
         {/* User-Specific Routes */}
@@ -85,7 +85,7 @@ function App() {
         {/* Admin-Specific Routes */}
         {role === "admin" && (
           <>
-            <Route path="/admin" element={<AdminDashboard />} />
+            {/*<Route path="/admin" element={<AdminDashboard />} />*/}
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
           </>
         )}

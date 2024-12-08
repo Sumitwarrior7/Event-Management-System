@@ -1,17 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { GlobalContext } from "../globalContext";
 
 function UserMain() {
   const [eventsData, setEventsData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
+  const {globalState } = useContext(GlobalContext);
+ 
   const baseUrl = process.env.REACT_APP_BASE_URL;
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get(`${baseUrl}/event/getAllEvent`);
+        const userEmail=globalState.email;
+        console.log("Email:",userEmail)
+        const response = await axios.post(`${baseUrl}/event/getEvent`, {
+          email: userEmail,
+        });
         const data = Array.isArray(response.data) ? response.data : [];
         console.log(data);
         setEventsData(data);

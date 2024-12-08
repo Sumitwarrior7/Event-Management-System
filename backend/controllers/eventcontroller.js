@@ -12,19 +12,25 @@ module.exports.createEvent = async function (req, res) {
 module.exports.getEvent = async function (req, res) {
   try {
     const useremail = req.body.email;
+    console.log("Email received from request body:", useremail);
+
     const snapsh = db.collection("events");
-    var ref = await snapsh.where("email", "==", `${useremail}`).get();
-    var list = [];
+    const ref = await snapsh.where("email", "==", useremail).get();
+
+    console.log("Number of documents found:", ref.docs.length);
+
+    const list = [];
     ref.forEach((doc) => {
       list.push({ id: doc.id, data: doc.data() });
     });
 
     res.status(200).json({
-      message: "Get Event ",
+      message: "Get Event",
       list,
     });
   } catch (error) {
-    console.log(error.message);
+    console.error("Error in getEvent:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 module.exports.getAllEvent = async function (req, res) {

@@ -32,15 +32,6 @@ const AdminDashboard = () => {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Header */}
-      <div className="bg-blue-600 text-white p-4 flex justify-between items-center">
-        <h1 className="text-lg font-bold">Admin Dashboard</h1>
-        <button
-          onClick={() => alert("Logged out!")}
-          className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded"
-        >
-          Logout
-        </button>
-      </div>
 
       {/* Sidebar and Main Content */}
       <div className="flex">

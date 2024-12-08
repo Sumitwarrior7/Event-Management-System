@@ -9,7 +9,7 @@ const Login = () => {
   const { globalState, setGlobalState } = useContext(GlobalContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState(globalState.role);
+  const [role, setRole] = useState(globalState.role || "user");
   const [errorMessage, setErrorMessage] = useState("");
 
   const navigate = useNavigate();
@@ -21,11 +21,14 @@ const Login = () => {
       let endpoint = "";
       if (role === "user") {
         endpoint = `${baseUrl}/user/login`;
+        console.log("swayam",endpoint);
       } else if (role === "admin") {
         endpoint = `${baseUrl}/admin/login`;
       } else if (role === "vendor") {
         endpoint = `${baseUrl}/vender/login`;
       }
+      console.log("here it is", role);
+
 
       // Make a POST request to the backend
       const response = await fetch(endpoint, {
@@ -37,7 +40,6 @@ const Login = () => {
       });
 
       const data = await response.json();
-      console.log("here it is", data[0].data.email);
       if (response.ok) {
         // Update global state with login details
         setGlobalState({

@@ -55,7 +55,7 @@ function App() {
         {/* Common Routes */}
         <Route path="/" element={<Home />} />
         {/* <Route path="/vendor" element={<VendorMain />} /> */}
-        {/* <Route path="/admin" element={<AdminMain />} /> */}
+        <Route path="/admin" element={<AdminMain />} />
         <Route path="/user" element={<UserMain />} />
 
         {/* User-Specific Routes */}

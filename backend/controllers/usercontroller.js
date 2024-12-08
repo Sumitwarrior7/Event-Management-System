@@ -58,3 +58,28 @@ module.exports.login = async function (req, res) {
     console.log(error.message);
   }
 };
+
+module.exports.deleteUser = async function (req, res) {
+  try {
+    const useremail = req.query.email; 
+
+    const snapsh = db.collection("users"); 
+    const ref = await snapsh.where("email", "==", useremail).get();
+
+    if (ref.empty) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const batch = db.batch();
+    ref.forEach((doc) => {
+      const docRef = snapsh.doc(doc.id);
+      batch.delete(docRef); 
+    });
+
+    await batch.commit();
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
+  }
+};

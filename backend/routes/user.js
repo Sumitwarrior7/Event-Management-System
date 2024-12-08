@@ -6,6 +6,7 @@ router
   .get("/getAllUser", userController.getAllUser)
   .post("/createUser", userController.createUser)
   .post("/getUser", userController.getUser)
-  .post("/login", userController.login);
+  .post("/login", userController.login)
+  .delete("/deleteUser",userController.deleteUser);
 
 module.exports = router;

@@ -87,3 +87,27 @@ module.exports.addItem = async function (req, res) {
     res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 };
+module.exports.deleteVender = async function (req, res) {
+  try {
+    const useremail = req.query.email; // Use req.query to access email sent as query parameter
+    console.log("email",useremail);
+    const snapsh = db.collection("venders");
+    const ref = await snapsh.where("email", "==", useremail).get();
+
+    if (ref.empty) {
+      return res.status(404).json({ message: "Vendor not found" });
+    }
+
+    const batch = db.batch();
+    ref.forEach((doc) => {
+      const docRef = snapsh.doc(doc.id);
+      batch.delete(docRef);
+    });
+
+    await batch.commit();
+    res.status(200).json({ message: "Vendor deleted successfully" });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
+  }
+};

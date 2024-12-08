@@ -18,8 +18,9 @@ function UserMain() {
         const response = await axios.post(`${baseUrl}/event/getEvent`, {
           email: userEmail,
         });
-        const data = Array.isArray(response.data) ? response.data : [];
-        console.log(data);
+        // console.log("list",response);
+        const data = Array.isArray(response.data.list) ? response.data.list : [];
+        console.log("hmm",data);
         setEventsData(data);
       } catch (error) {
         console.error("Error fetching events:", error);

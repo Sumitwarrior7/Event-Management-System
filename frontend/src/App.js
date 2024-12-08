@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { GlobalContext } from "./globalContext"; // Import Global Context
 import Login from "./components/Login";
 import VendorMain from "./components/VendorMain";
@@ -25,7 +25,10 @@ import Header from "./components/header";
 function App() {
   const { globalState } = useContext(GlobalContext); // Access global state
   const { role, email } = globalState; // Get role and email from context
+  const location = useLocation(); // Get the current route path
   console.log("sumit",role, email)
+  // Routes where the Header should not be displayed
+  const noHeaderRoutes = ["/login", "/register", "/"];
   // Redirect user to the respective dashboard if they are already logged in
   const redirectToDashboard = () => {
     if (role === "user") {
@@ -40,7 +43,9 @@ function App() {
 
   return (
     <div>
-      <Header />
+      {/* Display Header only when the current path is not in the noHeaderRoutes */}
+      {!noHeaderRoutes.includes(location.pathname) && <Header />}
+
       <Routes>
         {/* Redirect authenticated user to their dashboard if visiting login/signup */}
         <Route

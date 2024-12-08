@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { GlobalContext } from "../globalContext";
 // Import baseUrl from .env file
-const baseUrl = process.env.REACT_APP_BASE_URL;
+const baseUrl = (process.env.REACT_APP_BASE_URL || "").replace(/^"|"$/g, "");
 
 const Signup = () => {
   const { globalState, setGlobalState } = useContext(GlobalContext);

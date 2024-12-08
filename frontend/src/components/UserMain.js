@@ -8,7 +8,7 @@ function UserMain() {
   const [isLoading, setIsLoading] = useState(true);
   const {globalState } = useContext(GlobalContext);
  
-  const baseUrl = process.env.REACT_APP_BASE_URL;
+  const baseUrl = (process.env.REACT_APP_BASE_URL || "").replace(/^"|"$/g, "");
 
   useEffect(() => {
     const fetchEvents = async () => {

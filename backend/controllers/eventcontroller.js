@@ -15,7 +15,7 @@ module.exports.getEvent = async function (req, res) {
     console.log("Email received from request body:", useremail);
 
     const snapsh = db.collection("events");
-    const ref = await snapsh.where("email", "==", useremail).get();
+    const ref = await snapsh.where("createdBy", "==", useremail).get();
 
     console.log("Number of documents found:", ref.docs.length);
 
@@ -23,7 +23,7 @@ module.exports.getEvent = async function (req, res) {
     ref.forEach((doc) => {
       list.push({ id: doc.id, data: doc.data() });
     });
-
+    console.log(list);
     res.status(200).json({
       message: "Get Event",
       list,

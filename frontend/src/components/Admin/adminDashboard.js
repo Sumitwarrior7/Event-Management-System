@@ -1,87 +1,84 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios"; // For making HTTP requests
+
+const baseUrl = process.env.REACT_APP_BASE_URL;
 
 const AdminDashboard = () => {
-  const [currentSection, setCurrentSection] = useState("home");
+  const [vendors, setVendors] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Sample data for vendors and users
-  const [vendors, setVendors] = useState([
-    { id: 1, name: "Vendor A", contact: "123-456-7890", approved: false },
-    { id: 2, name: "Vendor B", contact: "987-654-3210", approved: false },
-    { id: 3, name: "Vendor C", contact: "555-555-5555", approved: false },
-  ]);
+  // Fetch all vendors and users from the API when the component mounts
+  useEffect(() => {
+    const fetchVendorsAndUsers = async () => {
+      try {
+        const vendorResponse = await axios.get(`${baseUrl}/vender/getAllVender`);
+        setVendors(vendorResponse.data); // Assuming the response is an array of vendors
 
-  const [users, setUsers] = useState([
-    { id: 1, name: "User A", email: "usera@example.com" },
-    { id: 2, name: "User B", email: "userb@example.com" },
-    { id: 3, name: "User C", email: "userc@example.com" },
-  ]);
+        const userResponse = await axios.get(`${baseUrl}/user/getAllUser`);
+        setUsers(userResponse.data); // Assuming the response is an array of users
 
-  // Handlers for removing and approving vendors
-  const handleRemoveVendor = (id) => {
-    setVendors((prev) => prev.filter((vendor) => vendor.id !== id));
+        console.log(vendorResponse.data, userResponse.data);
+      } catch (err) {
+        setError("Failed to fetch data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVendorsAndUsers();
+  }, []);
+
+  // Handler for deleting a vendor
+  const handleDeleteVendor = async (email) => {
+    try {
+      // Optimistic update: Immediately remove the vendor from the state
+      setVendors((prev) => prev.filter((vendor) => vendor.data.email !== email));
+
+      // Delete the vendor from the backend
+      await axios.delete(`${baseUrl}/vender/deleteVender`, {
+        params: { email },
+      });
+    } catch (err) {
+      // Revert the optimistic update if the deletion fails
+      setVendors((prev) => [...prev]); // Refresh the state from the previous state
+      setError("Failed to delete vendor");
+    }
   };
 
-  const handleApproveVendor = (id) => {
-    setVendors((prev) =>
-      prev.map((vendor) =>
-        vendor.id === id ? { ...vendor, approved: true } : vendor
-      )
-    );
+  // Handler for deleting a user
+  const handleDeleteUser = async (email) => {
+    try {
+      // Optimistic update: Immediately remove the user from the state
+      setUsers((prev) => prev.filter((user) => user.data.email !== email));
+
+      // Delete the user from the backend
+      await axios.delete(`${baseUrl}/user/deleteUser`, {
+        params: { email },
+      });
+    } catch (err) {
+      // Revert the optimistic update if the deletion fails
+      setUsers((prev) => [...prev]); // Refresh the state from the previous state
+      setError("Failed to delete user");
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Header */}
-
       {/* Sidebar and Main Content */}
       <div className="flex">
         {/* Sidebar */}
         <div className="w-1/4 bg-white shadow-md p-4">
           <ul className="space-y-2">
             <li>
-              <button
-                onClick={() => setCurrentSection("home")}
-                className={`w-full text-left px-4 py-2 rounded ${
-                  currentSection === "home" ? "bg-blue-100" : "hover:bg-gray-100"
-                }`}
-              >
-                Home
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => setCurrentSection("vendors")}
-                className={`w-full text-left px-4 py-2 rounded ${
-                  currentSection === "vendors"
-                    ? "bg-blue-100"
-                    : "hover:bg-gray-100"
-                }`}
-              >
+              <button className="w-full text-left px-4 py-2 rounded hover:bg-gray-100">
                 Maintain Vendor
               </button>
             </li>
             <li>
-              <button
-                onClick={() => setCurrentSection("users")}
-                className={`w-full text-left px-4 py-2 rounded ${
-                  currentSection === "users"
-                    ? "bg-blue-100"
-                    : "hover:bg-gray-100"
-                }`}
-              >
+              <button className="w-full text-left px-4 py-2 rounded hover:bg-gray-100">
                 Maintain User
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => setCurrentSection("approvedVendors")}
-                className={`w-full text-left px-4 py-2 rounded ${
-                  currentSection === "approvedVendors"
-                    ? "bg-blue-100"
-                    : "hover:bg-gray-100"
-                }`}
-              >
-                Approved Vendors
               </button>
             </li>
           </ul>
@@ -89,116 +86,70 @@ const AdminDashboard = () => {
 
         {/* Main Content */}
         <div className="w-3/4 p-4">
-          {currentSection === "home" && (
-            <div>
-              <h2 className="text-2xl font-bold mb-4">Welcome to the Admin Dashboard</h2>
-              <p className="text-gray-700">
-                Use the sidebar to navigate and manage vendors or users.
-              </p>
-            </div>
-          )}
+          <h2 className="text-2xl font-bold mb-4">Vendor Management</h2>
 
-          {currentSection === "vendors" && (
-            <div>
-              <h2 className="text-2xl font-bold mb-4">Vendor Management</h2>
-              {vendors.length === 0 ? (
-                <p className="text-gray-500">No vendors available.</p>
-              ) : (
-                <table className="min-w-full bg-white border rounded shadow">
-                  <thead className="bg-blue-500 text-white">
-                    <tr>
-                      <th className="text-left px-4 py-2">Name</th>
-                      <th className="text-left px-4 py-2">Contact</th>
-                      <th className="text-center px-4 py-2">Status</th>
-                      <th className="text-center px-4 py-2">Actions</th>
+          {loading ? (
+            <p>Loading...</p>
+          ) : error ? (
+            <p className="text-red-500">{error}</p>
+          ) : (
+            <>
+              {/* Vendor Table */}
+              <h3 className="text-xl font-semibold mb-4">Vendors</h3>
+              <table className="min-w-full bg-white border rounded shadow mb-4">
+                <thead className="bg-blue-500 text-white">
+                  <tr>
+                    <th className="text-left px-4 py-2">Name</th>
+                    <th className="text-left px-4 py-2">Email</th>
+                    <th className="text-center px-4 py-2">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {vendors.map((vendor) => (
+                    <tr key={vendor.id} className="border-b">
+                      <td className="px-4 py-2">{vendor.data.name}</td>
+                      <td className="px-4 py-2">{vendor.data.email}</td>
+                      <td className="px-4 py-2 text-center">
+                        <button
+                          onClick={() => handleDeleteVendor(vendor.data.email)}
+                          className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+                        >
+                          Delete
+                        </button>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {vendors.map((vendor) => (
-                      <tr key={vendor.id} className="border-b">
-                        <td className="px-4 py-2">{vendor.name}</td>
-                        <td className="px-4 py-2">{vendor.contact}</td>
-                        <td className="px-4 py-2 text-center">
-                          {vendor.approved ? "Approved" : "Pending"}
-                        </td>
-                        <td className="px-4 py-2 text-center space-x-2">
-                          {!vendor.approved && (
-                            <button
-                              onClick={() => handleApproveVendor(vendor.id)}
-                              className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
-                            >
-                              Approve
-                            </button>
-                          )}
-                          <button
-                            onClick={() => handleRemoveVendor(vendor.id)}
-                            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
-                          >
-                            Remove
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
-            </div>
-          )}
+                  ))}
+                </tbody>
+              </table>
 
-          {currentSection === "users" && (
-            <div>
-              <h2 className="text-2xl font-bold mb-4">User Management</h2>
-              {users.length === 0 ? (
-                <p className="text-gray-500">No users available.</p>
-              ) : (
-                <table className="min-w-full bg-white border rounded shadow">
-                  <thead className="bg-blue-500 text-white">
-                    <tr>
-                      <th className="text-left px-4 py-2">Name</th>
-                      <th className="text-left px-4 py-2">Email</th>
-                      <th className="text-center px-4 py-2">Actions</th>
+              {/* User Table */}
+              <h3 className="text-xl font-semibold mb-4">Users</h3>
+              <table className="min-w-full bg-white border rounded shadow">
+                <thead className="bg-blue-500 text-white">
+                  <tr>
+                    <th className="text-left px-4 py-2">Name</th>
+                    <th className="text-left px-4 py-2">Email</th>
+                    <th className="text-center px-4 py-2">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {users.map((user) => (
+                    <tr key={user.id} className="border-b">
+                      <td className="px-4 py-2">{user.data.name}</td>
+                      <td className="px-4 py-2">{user.data.email}</td>
+                      <td className="px-4 py-2 text-center">
+                        <button
+                          onClick={() => handleDeleteUser(user.data.email)}
+                          className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+                        >
+                          Delete
+                        </button>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {users.map((user) => (
-                      <tr key={user.id} className="border-b">
-                        <td className="px-4 py-2">{user.name}</td>
-                        <td className="px-4 py-2">{user.email}</td>
-                        <td className="px-4 py-2 text-center">
-                          <button
-                            onClick={() => setUsers((prev) =>
-                              prev.filter((u) => u.id !== user.id)
-                            )}
-                            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
-                          >
-                            Remove
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
-            </div>
-          )}
-
-          {currentSection === "approvedVendors" && (
-            <div>
-              <h2 className="text-2xl font-bold mb-4">Approved Vendors</h2>
-              {vendors.filter((vendor) => vendor.approved).length === 0 ? (
-                <p className="text-gray-500">No approved vendors yet.</p>
-              ) : (
-                <ul className="list-disc list-inside">
-                  {vendors
-                    .filter((vendor) => vendor.approved)
-                    .map((vendor) => (
-                      <li key={vendor.id}>
-                        {vendor.name} - {vendor.contact}
-                      </li>
-                    ))}
-                </ul>
-              )}
-            </div>
+                  ))}
+                </tbody>
+              </table>
+            </>
           )}
         </div>
       </div>

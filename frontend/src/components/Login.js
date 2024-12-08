@@ -51,10 +51,12 @@ const Login = () => {
 
         console.log("Global State Updated:", { email: data[0].data.email, role:data[0].data.role });
         // Redirect to appropriate dashboard
+        console.log("role",role);
         if (role === "user") {
           navigate("/user");
         } else if (role === "admin") {
-          navigate("/admin/dashboard");
+          window.location.href = "/admin/dashboard";
+
         } else if (role === "vendor") {
           navigate("/vendor/dashboard");
         }

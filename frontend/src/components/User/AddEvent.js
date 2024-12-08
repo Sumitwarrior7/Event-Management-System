@@ -115,9 +115,12 @@ const AddEvent = () => {
         style={{
           backgroundImage:
             "url('https://c4.wallpaperflare.com/wallpaper/986/210/423/party-light-event-people-wallpaper-preview.jpg')",
+          backgroundRepeat: "no-repeat", // Ensures no repetition of the image
+          backgroundSize: "cover", // Scales the image to cover the entire container
+          backgroundPosition: "center", // Centers the image
         }}
       >
-        <h1 className="text-3xl font-bold text-blue-600 text-center mb-8">Add Event</h1>
+        <h1 className="text-3xl font-bold text-white text-center mb-8">Add Event</h1>
 
         <div className="max-w-md mx-auto bg-white rounded-lg shadow p-6 mb-8">
           <div className="mb-4">
@@ -127,7 +130,7 @@ const AddEvent = () => {
               placeholder="Event Name"
               value={eventName}
               onChange={(e) => setEventName(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 "
             />
           </div>
           <div className="mb-4">
@@ -136,7 +139,7 @@ const AddEvent = () => {
               type="date"
               value={eventDate}
               onChange={(e) => setEventDate(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2"
             />
           </div>
           <h2 className="text-lg font-semibold text-gray-800 mb-4">
@@ -166,7 +169,7 @@ const AddEvent = () => {
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleShowItems(vendor)}
-                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                    className="bg-sky-700 text-white px-4 py-2 rounded hover:bg-sky-700"
                   >
                     See Items
                   </button>
@@ -232,7 +235,7 @@ const AddEvent = () => {
         <div className="mt-8 text-center">
           <button
             onClick={handleSubmit}
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700"
+            className="bg-sky-700 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-sky-800"
           >
             Create Event
           </button>
